@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { breakDuration, restDuration, workDuration } from '../utils/palette';
 
-const initialTimerState = { playing: false, timerDuration: workDuration, toggleButtonValue: 'work' };
+const initialTimerState = { playing: false, timerDuration: workDuration, toggleTimerType: 'work' };
 
 const timerSlice = createSlice({
     name: 'timer',
@@ -22,8 +22,8 @@ const timerSlice = createSlice({
         setTimerDurationRest(state) {
             state.timerDuration = restDuration;
         },
-        setToggleButtonValue(state, action) {
-            state.toggleButtonValue = action.payload;
+        settoggleTimerType(state, action) {
+            state.toggleTimerType = action.payload;
         },
     }
 

@@ -1,7 +1,12 @@
 import { Box } from '@mui/joy';
 import { useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { timerFirst, timerLast, timerMiddle, timerTrailColor } from '../../utils/palette';
+import {
+  timerFirst,
+  timerLast,
+  timerMiddle,
+  timerTrailColor,
+} from '../../utils/palette';
 import { Typography } from '@mui/joy';
 import TimerTypeToggle from './TimerTypeToggle';
 import TimerButtons from './TimerButtons';
@@ -23,8 +28,8 @@ const Timer = () => {
   const timerDuration = useSelector(
     (state: RootState) => state.timer.timerDuration
   );
-  const buttonValue = useSelector(
-    (state: RootState) => state.timer.toggleButtonValue
+  const timerType = useSelector(
+    (state: RootState) => state.timer.toggleTimerType
   );
 
   const [keyForRestart, setKeyForRestart] = useState(0);
@@ -44,34 +49,34 @@ const Timer = () => {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
+  //handles intervals
   const handleOnComplete = () => {
-    //handles intervals
-    if (buttonValue === 'rest') {
+    if (timerType === 'rest') {
       // Directly switch to "Work" after "Rest" is finished
-      dispatch(timerActions.setToggleButtonValue('work'));
+      dispatch(timerActions.settoggleTimerType('work'));
       dispatch(timerActions.setTimerDurationWork());
       setKeyForRestart((prev) => prev + 1);
       return { shouldRepeat: true };
     }
 
     if (intervalNum === 0 || intervalNum === 1 || intervalNum === 2) {
-      if (buttonValue === 'work') {
-        dispatch(timerActions.setToggleButtonValue('break'));
+      if (timerType === 'work') {
+        dispatch(timerActions.settoggleTimerType('break'));
         dispatch(timerActions.setTimerDurationBreak());
         setKeyForRestart((prev) => prev + 1); //for restarting the timer
       }
-      if (buttonValue === 'break') {
-        dispatch(timerActions.setToggleButtonValue('work'));
+      if (timerType === 'break') {
+        dispatch(timerActions.settoggleTimerType('work'));
         dispatch(timerActions.setTimerDurationWork());
         setIntervalNum((i) => i + 1);
         setKeyForRestart((prev) => prev + 1);
       }
-      if (buttonValue === 'rest') {
-        dispatch(timerActions.setToggleButtonValue('work'));
-        dispatch(timerActions.setTimerDurationWork());
-      }
+      // if (timerType === 'rest') {
+      //   dispatch(timerActions.settoggleTimerType('work'));
+      //   dispatch(timerActions.setTimerDurationWork());
+      // }
     } else {
-      dispatch(timerActions.setToggleButtonValue('rest'));
+      dispatch(timerActions.settoggleTimerType('rest'));
       dispatch(timerActions.setTimerDurationRest());
       setKeyForRestart((prev) => prev + 1);
       setIntervalNum(0);
@@ -100,8 +105,8 @@ const Timer = () => {
         </CountdownCircleTimer>
       </Typography>
 
-      <IntervalNumber intervalNum={intervalNum}/>
-      
+      <IntervalNumber intervalNum={intervalNum} />
+
       <TimerButtons
         submitStartClick={submitStartClick}
         submitRestartClick={submitRestartClick}

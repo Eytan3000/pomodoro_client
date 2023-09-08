@@ -2,12 +2,13 @@ export interface RootState {
   timer: {
     playing: boolean;
     timerDuration: number;
-    toggleButtonValue: string;
+    toggleTimerType: 'work' | 'break' | 'rest';
+    // toggleTimerType: ButtonType;
   };
 }
 
-export const enum ButtonType {
-  WORK = 'work',
-  BREAK = 'break',
-  Rest = 'rest',
-}
+// export const enum ButtonType {
+//   WORK = 'work',
+//   BREAK = 'break',
+//   REST = 'rest',
+// }

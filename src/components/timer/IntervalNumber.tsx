@@ -9,7 +9,7 @@ export default function IntervalNumber({
     intervalNum
 }:props) {
     const buttonValue = useSelector(
-        (state: RootState) => state.timer.toggleButtonValue
+        (state: RootState) => state.timer.toggleTimerType
       );
   return (
     <Typography sx={{ marginTop: 4 }}>

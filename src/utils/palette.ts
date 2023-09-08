@@ -16,6 +16,10 @@ export const timerTrailColor = "#ff9093ff";
 // export const breakDuration = 300;
 // export const restDuration = 900;
 
-export const workDuration = 1;
-export const breakDuration = 2;
-export const restDuration = 3;
+// export const workDuration = 1;
+// export const breakDuration = 2;
+// export const restDuration = 3;
+
+export const workDuration = 10;
+export const breakDuration = 15;
+export const restDuration = 30;
