@@ -10,7 +10,7 @@ const timerSlice = createSlice({
         togglePlaying(state) {
             state.playing = !state.playing;
         },
-        togglePlayingToFalse(state) {
+        changePlayingToFalse(state) {
             state.playing = false;
         },
         setTimerDurationWork(state) {

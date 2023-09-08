@@ -8,11 +8,14 @@ export const timerLast = '#ff6b6eff';
 
 export const play = '#22c467ff';
 
+export const timerTrailColor = "#ff9093ff";
+
+
 
 // export const workDuration = 1500;
 // export const breakDuration = 300;
 // export const restDuration = 900;
 
-export const workDuration = 3;
-export const breakDuration = 6;
-export const restDuration = 9;
+export const workDuration = 1;
+export const breakDuration = 2;
+export const restDuration = 3;

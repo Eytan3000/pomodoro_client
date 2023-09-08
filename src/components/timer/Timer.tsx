@@ -1,23 +1,17 @@
 import { Box } from '@mui/joy';
 import { useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { timerFirst, timerLast, timerMiddle } from '../../utils/palette';
+import { timerFirst, timerLast, timerMiddle, timerTrailColor } from '../../utils/palette';
 import { Typography } from '@mui/joy';
 import TimerTypeToggle from './TimerTypeToggle';
-import TimerButtons from '../TimerButtons';
+import TimerButtons from './TimerButtons';
 import { useDispatch, useSelector } from 'react-redux';
 import { timerActions } from '../../store';
+import { RootState } from '../../utils/interfaces';
+import IntervalNumber from './IntervalNumber';
 // import { RootState } from 'app/redux/store';
 //-------------------------------------------------------------------
 const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
-
-interface RootState {
-  timer: {
-    playing: boolean;
-    timerDuration: number;
-    toggleButtonValue: string;
-  };
-}
 //-------------------------------------------------------------------
 const Timer = () => {
   // console.log('timer render');
@@ -35,13 +29,13 @@ const Timer = () => {
 
   const [keyForRestart, setKeyForRestart] = useState(0);
 
-  const submitStartClick = () => {
+  const submitStartClick = (): void => {
     dispatch(timerActions.togglePlaying());
   };
 
   const submitRestartClick = () => {
     setKeyForRestart((prev) => prev + 1);
-    dispatch(timerActions.togglePlayingToFalse());
+    dispatch(timerActions.changePlayingToFalse());
   };
 
   const formatTime = (remainingTime: number) => {
@@ -50,56 +44,67 @@ const Timer = () => {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
+  const handleOnComplete = () => {
+    //handles intervals
+    if (buttonValue === 'rest') {
+      // Directly switch to "Work" after "Rest" is finished
+      dispatch(timerActions.setToggleButtonValue('work'));
+      dispatch(timerActions.setTimerDurationWork());
+      setKeyForRestart((prev) => prev + 1);
+      return { shouldRepeat: true };
+    }
+
+    if (intervalNum === 0 || intervalNum === 1 || intervalNum === 2) {
+      if (buttonValue === 'work') {
+        dispatch(timerActions.setToggleButtonValue('break'));
+        dispatch(timerActions.setTimerDurationBreak());
+        setKeyForRestart((prev) => prev + 1); //for restarting the timer
+      }
+      if (buttonValue === 'break') {
+        dispatch(timerActions.setToggleButtonValue('work'));
+        dispatch(timerActions.setTimerDurationWork());
+        setIntervalNum((i) => i + 1);
+        setKeyForRestart((prev) => prev + 1);
+      }
+      if (buttonValue === 'rest') {
+        dispatch(timerActions.setToggleButtonValue('work'));
+        dispatch(timerActions.setTimerDurationWork());
+      }
+    } else {
+      dispatch(timerActions.setToggleButtonValue('rest'));
+      dispatch(timerActions.setTimerDurationRest());
+      setKeyForRestart((prev) => prev + 1);
+      setIntervalNum(0);
+    }
+
+    return { shouldRepeat: true };
+  };
   return (
     <Box>
       <TimerTypeToggle />
-      <Typography level="h1">
+
+      <Typography level="h1" sx={{ marginLeft: 2, marginTop: 5 }}>
         <CountdownCircleTimer
-          trailColor="#ff9093ff"
+          trailColor={timerTrailColor}
           size={300}
           strokeWidth={5}
-          // isGrowing
           key={keyForRestart}
           isPlaying={playing}
           duration={timerDuration}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           colors={timerColors}
           colorsTime={[7, 5, 2, 0]}
-          onComplete={() => {
-            // here
-
-            // console.log(intervalNum);
-            // console.log(buttonValue);
-
-            // if (intervalNum === 0 || intervalNum === 1 || intervalNum === 2 || intervalNum === 3) {
-              
-            //   if (buttonValue === 'work') {
-                // dispatch(timerActions.setToggleButtonValue('break'));
-                // dispatch(timerActions.setTimerDurationBreak());
-            //   }
-            //   if (buttonValue === 'break') {
-            //     setIntervalNum((i) => i + 1);
-            //     dispatch(timerActions.setToggleButtonValue('work'));
-            //     dispatch(timerActions.setTimerDurationWork());
-            //   }
-            //   if (buttonValue === 'rest') {
-            //     dispatch(timerActions.setToggleButtonValue('work'));
-            //     dispatch(timerActions.setTimerDurationWork());
-            //   }
-            // } else {
-            //   dispatch(timerActions.setToggleButtonValue('rest'));
-            //   dispatch(timerActions.setTimerDurationRest());
-            //   setIntervalNum(0);
-            // }
-
-            return { shouldRepeat: true };
-          }}>
+          onComplete={handleOnComplete}>
           {({ remainingTime }) => formatTime(remainingTime)}
         </CountdownCircleTimer>
       </Typography>
+
+      <IntervalNumber intervalNum={intervalNum}/>
+      
       <TimerButtons
         submitStartClick={submitStartClick}
         submitRestartClick={submitRestartClick}
-        playing={playing}
       />
     </Box>
   );

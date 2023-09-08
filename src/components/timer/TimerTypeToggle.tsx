@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { VariantProp } from '@mui/joy/styles';
+// import * as React from 'react';
+// import { VariantProp } from '@mui/joy/styles';
 import Button from '@mui/joy/Button';
 import ToggleButtonGroup from '@mui/joy/ToggleButtonGroup';
 import { Box } from '@mui/joy';
 import { useDispatch, useSelector } from 'react-redux';
 import { timerActions } from '../../store';
-import { breakDuration, restDuration, workDuration } from '../../utils/palette';
+// import { breakDuration, restDuration, workDuration } from '../../utils/palette';
 //-----------------------
 interface RootState {
   timer: {
