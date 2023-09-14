@@ -1,6 +1,15 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { breakDuration, restDuration, workDuration } from '../utils/palette';
 
+const tasksActive = [
+    'task 1 Non unde reiciendis aut eaque voluptatibus',
+    'task 2 Non unde reiciendis aut eaque voluptatibus',
+    'task 3 Non unde reiciendis aut eaque voluptatibus',
+    'task 4 est quae similique sed animi assumenda ut repellat deserunt a consequatur voluptas. Et repellendus nesciunt et iste voluptate.',
+];
+const tasksDone = ['task Done1 - Non unde reiciendis aut eaque voluptatibus'];
+
+
 const initialTimerState = { playing: false, timerDuration: workDuration, toggleTimerType: 'work' };
 
 const timerSlice = createSlice({
@@ -28,12 +37,39 @@ const timerSlice = createSlice({
     }
 
 })
+//-----------------------------
+const initialDrawerState = { tasksActive, tasksDone, isEditing:false};
+
+const drawerSlice = createSlice({
+    name: 'drawer',
+    initialState: initialDrawerState,
+    reducers: {
+        addTaskToTaskActive(state,action) {
+            state.tasksActive.push(action.payload);
+        },
+        removeTaskFromTaskActive(state,action) {
+            state.tasksActive.filter(task=>task !== action.payload);
+        },
+        addTaskToTaskDone(state,action) {
+            state.tasksDone.push(action.payload);
+        },
+        removeTaskFromTaskDone(state,action) {
+            state.tasksDone.filter(task=>task !== action.payload);
+        },
+        toggleIsEditing(state){
+            state.isEditing = !state.isEditing;
+        } 
+    }
+
+})
 
 const store = configureStore({
     reducer: {
         timer: timerSlice.reducer,
+        drawer: drawerSlice.reducer,
     },
 });
 
 export const timerActions = timerSlice.actions;
+export const drawerActions = drawerSlice.actions;
 export default store;

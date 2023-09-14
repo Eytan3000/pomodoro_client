@@ -3,7 +3,12 @@ export interface RootState {
     playing: boolean;
     timerDuration: number;
     toggleTimerType: 'work' | 'break' | 'rest';
-    // toggleTimerType: ButtonType;
+
+  };
+  drawer: {
+    tasksActive: string[];
+    tasksDone:string[];
+    isEditing: boolean;
   };
 }
 

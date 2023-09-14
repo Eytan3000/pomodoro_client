@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { timerActions } from '../../store';
 import { RootState } from '../../utils/interfaces';
 import IntervalNumber from './IntervalNumber';
-// import { RootState } from 'app/redux/store';
 //-------------------------------------------------------------------
 const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
 //-------------------------------------------------------------------

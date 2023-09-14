@@ -1,12 +1,10 @@
 import { CssVarsProvider, Divider, Grid, Sheet, Typography } from '@mui/joy';
-// import './App.css';
+import './App.css';
 import Timer from './components/timer/Timer';
 import theme from './utils/ExtendTheme';
 import { Box } from '@mui/system';
 import AppBar from './components/ui/AppBar';
 import Tasks from './components/drawer/Tasks';
-
-
 
 function App() {
   return (
@@ -16,10 +14,14 @@ function App() {
 
         <Grid
           container
+          className={'custom-grid'}
           spacing={2}
           columns={8}
-          sx={{ flexGrow: 1, wrap: 'wrap' }}>
-          <Grid xs={5} md={6}>
+          sx={{
+            flexGrow: 1,
+            wrap: 'wrap',
+          }}>
+          <Grid xs={8} md={6}>
             <Box
               display={'flex'}
               justifyContent={'center'}
@@ -30,7 +32,7 @@ function App() {
               <Timer />
             </Box>
           </Grid>
-          <Grid xs={3} md={2}>
+          <Grid xs={8} md={2}>
             <Sheet
               variant="outlined"
               color="neutral"
