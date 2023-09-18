@@ -2,20 +2,26 @@ import Box from '@mui/joy/Box';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
-import { Button, CardActions, Checkbox } from '@mui/joy';
+import { Checkbox } from '@mui/joy';
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/joy/IconButton';
-import { Padding } from '@mui/icons-material';
-import TestBox from './textBox';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../utils/interfaces';
-import { drawerActions } from '../../store';
+import { useMutation } from '@tanstack/react-query';
+import { deleteTask, editTask } from '../../utils/http';
+import { queryClient } from '../../utils/utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import TextBox from './textBox';
 
 //----------------------------------------------------------------
+interface Task {
+  content: string;
+  id: number;
+  status: 'active' | 'done';
+}
 interface Props {
-  task: string;
+  task: Task;
   index: number;
   isActiveProp: boolean;
 }
@@ -25,25 +31,42 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
   const [isActive, setIsActive] = useState(isActiveProp);
   const [isEditing, setIsEditing] = useState(false);
 
-  // const dispatch = useDispatch();
-  // const isEditing = useSelector((state: RootState) => state.drawer.isEditing)
+  const { mutate } = useMutation({
+    mutationFn: (id: number) => deleteTask(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['active-tasks'],
+      });
+    },
+  });
+
+  const { mutate:textContentMutate } = useMutation({
+    mutationFn: editTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['active-tasks'],
+      });
+    },
+  });
+
 
   const handleClickCheckbox = () => {
     setIsActive((prev) => !prev);
     // update db: remove task from Active and add to Done
   };
   const handleEdit = () => {
-    console.log('handleEdit');
-    // dispatch(drawerActions.toggleIsEditing());
     setIsEditing((prev) => !prev);
   };
   const handleDelete = () => {
-    console.log('handleDelete');
     // delete note in db
+    mutate(task.id);
   };
-  const handleOkClick = () => {
+  const handleOkClick = (textContent:string) => {
     setIsEditing(false);
+    
     //update new note in db.
+    textContentMutate({id:task.id, textContent});
+
   };
 
   // css sx prop
@@ -60,7 +83,11 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
   return (
     <Box display={'flex-grow'} justifyContent={'center'} key={index}>
       {isEditing ? (
-        <TestBox handleOkClick={handleOkClick} task={task}/>
+        <TextBox
+          handleOkClick={handleOkClick}
+          task={task.content}
+          setExit={setIsEditing.bind(false)}
+        />
       ) : (
         <Card
           sx={{ minHeight: 58 }}
@@ -81,20 +108,20 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
               <Typography
                 level="body-sm"
                 sx={isActive ? {} : { textDecoration: 'line-through' }}>
-                {task}
+                {task.content}
               </Typography>
             </CardContent>
 
-              <Box display={'flex'} flexDirection={'column'} mt={-1}>
-                <IconButton size={'sm'} sx={iconButtonSX}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-            {isActive && (
+            <Box display={'flex'} flexDirection={'column'} mt={-1}>
+              <IconButton size={'sm'} sx={iconButtonSX} onClick={handleDelete}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+              {isActive && (
                 <IconButton size={'sm'} sx={iconButtonSX} onClick={handleEdit}>
                   <EditIcon />
                 </IconButton>
-            )}
-              </Box>
+              )}
+            </Box>
           </Box>
         </Card>
       )}

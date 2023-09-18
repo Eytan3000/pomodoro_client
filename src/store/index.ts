@@ -1,5 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
-import { breakDuration, restDuration, workDuration } from '../utils/palette';
+import { breakDuration, restDuration, workDuration } from '../utils/utils';
 
 const tasksActive = [
     'task 1 Non unde reiciendis aut eaque voluptatibus',
