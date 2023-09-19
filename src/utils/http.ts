@@ -1,5 +1,11 @@
+
 const url = 'http://localhost:8090/'
 
+interface Task {
+    content: string;
+    id: number;
+    status: 'active' | 'done';
+}
 
 export async function getActiveTasks(signal: AbortSignal) {
     const response = await fetch(url + 'tasks_active', { signal, });
@@ -55,6 +61,7 @@ export async function deleteTask(id: number) {
 }
 
 export async function editTask(object: { id: number, textContent: string }) {
+
     const content = { content: object.textContent };
     const id = object.id;
 
@@ -67,6 +74,37 @@ export async function editTask(object: { id: number, textContent: string }) {
     });
 
     if (!response.ok) {
+        const error = new Error('An error occurred while fetching the event');
+        throw error;
+    }
+
+    return response;
+
+}
+
+export async function switchTaskStatus(object: { task: Task }) {
+    const id = object.task.id;
+    let response;
+
+    if (object.task.status === 'active') {
+
+        response = await fetch(url + 'task_status_toDone/' + id, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+    }
+    if (object.task.status === 'done') {
+
+        response = await fetch(url + 'task_status_toActive/' + id, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+    }
+    if (!response?.ok) {
         const error = new Error('An error occurred while fetching the event');
         throw error;
     }

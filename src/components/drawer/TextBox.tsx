@@ -27,7 +27,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState('');
 
-  const [textContent, setTextContent] = useState('');
+  const [textContent, setTextContent] = useState<string>(task);
 
   function handleSubmitTask(e?: React.FormEvent) {
     e?.preventDefault();

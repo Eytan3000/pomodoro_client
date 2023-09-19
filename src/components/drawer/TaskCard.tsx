@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/joy/IconButton';
 import { useMutation } from '@tanstack/react-query';
-import { deleteTask, editTask } from '../../utils/http';
+import { deleteTask, editTask, switchTaskStatus } from '../../utils/http';
 import { queryClient } from '../../utils/utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -22,11 +22,11 @@ interface Task {
 }
 interface Props {
   task: Task;
-  index: number;
+  key: number;
   isActiveProp: boolean;
 }
 //----------------------------------------------------------------
-export default function TaskCard({ task, index, isActiveProp }: Props) {
+export default function TaskCard({ task, key, isActiveProp }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(isActiveProp);
   const [isEditing, setIsEditing] = useState(false);
@@ -35,24 +35,56 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
     mutationFn: (id: number) => deleteTask(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['active-tasks'],
+        queryKey: ['active-tasks']
       });
+      queryClient.invalidateQueries({ queryKey: ['done-tasks'] });
     },
   });
 
-  const { mutate:textContentMutate } = useMutation({
+  const { mutate: textContentMutate } = useMutation({
     mutationFn: editTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['active-tasks'],
-      });
+    onMutate: async (data) => {
+      const newContent = data.textContent;
+  
+      // Fetch the current active tasks from the query
+      const previousData = queryClient.getQueryData<Task[]>(['active-tasks']) || [];
+  
+      // Find the task that needs to be updated
+      const updatedTaskIndex = previousData?.findIndex((task) => task.id === data.id) || -1;
+  
+      if (updatedTaskIndex !== -1) {
+        // Create a new array with the updated content
+        const updatedTasks = [...previousData];
+        updatedTasks[updatedTaskIndex].content = newContent;
+  
+        // Update the query data with the new tasks
+        queryClient.setQueryData(['active-tasks'], updatedTasks);
+  
+        return { previousData };
+      }
+    },
+    // onError: (error, variables, context) => {
+    //   // Handle error, if needed
+    //   // You can use context.previousData to access the previous data
+    // },
+    onSettled: () => {
+      queryClient.invalidateQueries(['active-tasks']);
     },
   });
 
+  const { mutate: mutateSwitchStatus } = useMutation({
+    mutationFn: switchTaskStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['active-tasks']);
+      queryClient.invalidateQueries(['done-tasks']);
+    }
+  });
+  
 
   const handleClickCheckbox = () => {
     setIsActive((prev) => !prev);
     // update db: remove task from Active and add to Done
+    mutateSwitchStatus({task:task})
   };
   const handleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -61,12 +93,11 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
     // delete note in db
     mutate(task.id);
   };
-  const handleOkClick = (textContent:string) => {
+  const handleOkClick = (textContent: string) => {
     setIsEditing(false);
-    
-    //update new note in db.
-    textContentMutate({id:task.id, textContent});
 
+    //update new note in db.
+    textContentMutate({ id: task.id, textContent });
   };
 
   // css sx prop
@@ -81,7 +112,7 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
   };
 
   return (
-    <Box display={'flex-grow'} justifyContent={'center'} key={index}>
+    <Box display={'flex-grow'} justifyContent={'center'} key={key}>
       {isEditing ? (
         <TextBox
           handleOkClick={handleOkClick}
@@ -93,13 +124,13 @@ export default function TaskCard({ task, index, isActiveProp }: Props) {
           sx={{ minHeight: 58 }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          key={index}
+          key={key}
           variant={isActive ? 'outlined' : 'soft'}>
           <Box sx={secondBoxSx}>
             <Checkbox
               onChange={handleClickCheckbox}
               checked={!isActive}
-              disabled={false}
+              // disabled={false}
               size="md"
               sx={{ marginRight: 2 }}
             />

@@ -22,9 +22,7 @@ export default function Tasks() {
   function handleOkClick(content: string) {
     setIsAddTaskActive(false);
     console.log(content);
-    mutate({content,});
-    //Add here logic for db - add task
-    // addTaskMutation.mutate({content:'eytan1'});
+    mutate({content});
   }
 
 
@@ -63,8 +61,8 @@ const {mutate} = useMutation({
   if (tasksActiveQuery.data) {
     activeContent = (
       <Stack spacing={1} mt={2}>
-        {tasksActiveQuery.data.map((task: Task, index: number) => (
-          <TaskCard task={task} index={index} isActiveProp={true} />
+        {tasksActiveQuery.data.map((task: Task) => (
+          <TaskCard task={task} key={task.id} isActiveProp={true} />
         ))}
         {isAddTaskActive ? (
           <TextBox
@@ -108,9 +106,9 @@ const {mutate} = useMutation({
           Done
         </Typography>
         <Divider sx={{ mt: 2 }} />
-        {tasksDoneQuery.data.map((task: Task, index: number) => {
+        {tasksDoneQuery.data.map((task: Task) => {
           return (
-            <TaskCard task={task} index={index} isActiveProp={false} />
+            <TaskCard task={task} key={task.id} isActiveProp={false} />
           );
         })}
       </Stack>
