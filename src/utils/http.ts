@@ -1,4 +1,5 @@
 
+
 const url = 'http://localhost:8090/'
 
 interface Task {
@@ -7,8 +8,15 @@ interface Task {
     status: 'active' | 'done';
 }
 
-export async function getActiveTasks(signal: AbortSignal) {
-    const response = await fetch(url + 'tasks_active', { signal, });
+
+export async function getActiveTasks(signal: AbortSignal, token:string) {
+    const response = await fetch(url + 'tasks_active', { 
+        signal,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // You may need to adjust this based on your API's requirements
+        },
+     });
 
     if (!response.ok) {
         const error = new Error('An error occurred while fetching the event');
@@ -109,5 +117,34 @@ export async function switchTaskStatus(object: { task: Task }) {
         throw error;
     }
 
+    return response;
+}
+// Auth ------------------------------------------------------
+
+export async function insertNewUser(content: { email: string, password:string }) {
+    
+    const response = await fetch(url + 'users', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(content),
+    });
+    
+
+
+    return response;
+}
+
+export async function login(content: { email: string, password:string }) {
+    
+    const response = await fetch(url + 'users/login', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(content),
+    });
+    
     return response;
 }

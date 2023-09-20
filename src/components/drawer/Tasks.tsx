@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { createTask, getActiveTasks, getDoneTasks } from '../../utils/http';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../utils/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../utils/interfaces';
 
 //------------------------------------------------------------
 interface Task {
@@ -13,7 +15,12 @@ interface Task {
   status: 'active' | 'done';
 }
 //------------------------------------------------------------
-export default function Tasks() {
+export default function Tasks() { 
+  const {accessToken} = useSelector(
+    (state: RootState) => state.jwt.accessToken
+  );
+
+
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
   function handleAddTask() {
@@ -40,7 +47,7 @@ const {mutate} = useMutation({
     queryKey: ['active-tasks'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-    queryFn: ({signal})=>getActiveTasks(signal),
+    queryFn: ({signal})=>getActiveTasks(signal, accessToken),
   });
   let activeContent;
   if (tasksActiveQuery.isLoading) {

@@ -63,13 +63,31 @@ const drawerSlice = createSlice({
 
 })
 
+//-----------------------------
+
+const initialJwtState = { accessToken:''};
+
+const jwtSlice = createSlice({
+    name: 'jwt',
+    initialState: initialJwtState,
+    reducers: {
+        updateAccessToken(state,action) {
+            state.accessToken= action.payload;
+        }
+    }
+
+})
+
+
 const store = configureStore({
     reducer: {
         timer: timerSlice.reducer,
         drawer: drawerSlice.reducer,
+        jwt: jwtSlice.reducer
     },
 });
 
 export const timerActions = timerSlice.actions;
 export const drawerActions = drawerSlice.actions;
+export const jwtActions = jwtSlice.actions;
 export default store;

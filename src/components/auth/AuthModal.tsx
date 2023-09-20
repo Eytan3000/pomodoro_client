@@ -3,11 +3,16 @@ import {
   Sheet,
   ModalClose,
   Typography,
-  Textarea,
   Box,
   Button,
+  Input,
 } from '@mui/joy';
 import { useState } from 'react';
+import { insertNewUser, login } from '../../utils/http';
+import ReportIcon from '@mui/icons-material/Report';
+import AlertBox from '../ui/AlertBox';
+import { useDispatch } from 'react-redux';
+import { jwtActions } from '../../store';
 
 interface Props {
   open: boolean;
@@ -19,24 +24,66 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  function emailChangeHandler(e: React.FormEvent<HTMLTextAreaElement>) {
+    const dispatch = useDispatch();
+
+  const [errorTitle, setErrorTitle] = useState<string>('');
+
+  function emailChangeHandler(e: React.FormEvent<HTMLInputElement>) {
     setEmail(e.currentTarget.value);
+    setErrorTitle('');
   }
 
-  function passwordChangeHandler(e: React.FormEvent<HTMLTextAreaElement>) {
+  function passwordChangeHandler(e: React.FormEvent<HTMLInputElement>) {
     setPassword(e.currentTarget.value);
   }
-  function handleLoginSubmit() {
-    //check if exist
 
-    // if exists:
-    setIsLogged(true);
-    setOpen(false);
+  //signup
+  async function handleSignupSubmit(event: React.SyntheticEvent) {
+    event.preventDefault();
+
+    const userDetails = {
+      email: email,
+      password: password,
+    };
+    const response = await insertNewUser(userDetails);
+
+    if (response.status === 400) {
+      const errorMessage = await response.text();
+      setErrorTitle(errorMessage);
+    }
+
+    if (response.status === 201) {
+      setIsLoginModal(true);
+    }
   }
-  function handleSignupSubmit() {
-    //check if exist
-    // sign up
+  
+  //Login
+  async function handleLoginSubmit(event: React.SyntheticEvent) {
+    event.preventDefault();
+
+    const userDetails = {
+      email: email,
+      password: password,
+    };
+    const response = await login(userDetails);
+
+    if (response.status === 400) {
+      const errorMessage = await response.text();
+      setErrorTitle(errorMessage);
+    }
+
+    if (response.status === 201) {
+      
+      const data = await response.json();
+      
+        // console.log(data); //access token jwt
+        dispatch(jwtActions.updateAccessToken(data));
+
+      setIsLogged(true);
+      setOpen(false);
+    }
   }
+  
   return (
     <Modal
       aria-labelledby="modal-title"
@@ -75,15 +122,17 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                   alignItems: 'center',
                   flexWrap: 'wrap',
                 }}>
-                <Textarea
+                <Input
                   name="Outlined"
+                  type="email"
                   placeholder="Email"
                   variant="outlined"
                   onChange={emailChangeHandler}
                 />
-                <Textarea
+                <Input
                   name="Outlined"
                   placeholder="Password"
+                  type="password"
                   variant="outlined"
                   onChange={passwordChangeHandler}
                 />
@@ -98,6 +147,13 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                     Sign Up
                   </a>
                 </Typography>
+                {errorTitle !== '' && (
+                  <AlertBox
+                    title={errorTitle}
+                    color="danger"
+                    icon={<ReportIcon />}
+                  />
+                )}
               </Box>
             </form>
           </>
@@ -123,15 +179,17 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                   alignItems: 'center',
                   flexWrap: 'wrap',
                 }}>
-                <Textarea
+                <Input
                   name="Outlined"
+                  type="email"
                   placeholder="Email"
                   variant="outlined"
                   onChange={emailChangeHandler}
                 />
-                <Textarea
+                <Input
                   name="Outlined"
                   placeholder="Password"
+                  type="password"
                   variant="outlined"
                   onChange={passwordChangeHandler}
                 />
@@ -146,6 +204,13 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                     Login
                   </a>
                 </Typography>
+                {errorTitle !== '' && (
+                  <AlertBox
+                    title={errorTitle}
+                    color="danger"
+                    icon={<ReportIcon />}
+                  />
+                )}
               </Box>
             </form>
           </>
