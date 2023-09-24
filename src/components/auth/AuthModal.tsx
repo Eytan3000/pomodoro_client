@@ -7,16 +7,12 @@ import {
   Button,
   Input,
 } from '@mui/joy';
-import { useEffect, useState } from 'react';
-// import { login } from '../../utils/http';
+import { useState } from 'react';
+
 import ReportIcon from '@mui/icons-material/Report';
 import AlertBox from '../ui/AlertBox';
-// import { useDispatch } from 'react-redux';
-// import { jwtActions } from '../../store';
 import { useAuth } from '../../contexts/AuthContext';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
-
+//-----------------------------------------------------------
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -30,6 +26,7 @@ interface AuthMethods {
 interface ErrorType {
   code: string;
 }
+//-----------------------------------------------------------
 export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
   const { signup, login, logOut }: AuthMethods = useAuth();
 
@@ -37,22 +34,7 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  //   const dispatch = useDispatch();
-
   const [errorTitle, setErrorTitle] = useState<string>('');
-//   const auth = getAuth();
-
-//   useEffect(() => {
-//     onAuthStateChanged(auth, async (user) => {
-//       if (user) {
-//         const x = await user.getIdToken();
-//         console.log(x);
-//         setIsLogged(true);
-//       } else {
-//         console.log('else');
-//       }
-//     });
-//   }, []);
 
   function emailChangeHandler(e: React.FormEvent<HTMLInputElement>) {
     setEmail(e.currentTarget.value);
@@ -86,6 +68,7 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
     // ADD verification for password
 
     // -- Firebase: --
+
     try {
       const res = await signup(email, password);
       console.log(res._tokenResponse.idToken);
@@ -135,10 +118,6 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
       }
     }
   }
-
-//   function handleLogOut() {
-//     logOut();
-//   }
 
   return (
     <Modal
@@ -210,16 +189,6 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                     icon={<ReportIcon />}
                   />
                 )}
-
-                {/* <Typography
-                  level="body-sm"
-                  textAlign={'center'}
-                  id="modal-desc"
-                  textColor="text.tertiary">
-                  <a href="#" onClick={handleLogOut}>
-                    Log Out
-                  </a>
-                </Typography> */}
               </Box>
             </form>
           </>
@@ -284,14 +253,4 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
       </Sheet>
     </Modal>
   );
-}
-
-//Make sure to use <code>aria-labelledby</code> on the modal dialog with an
-// optional <code>aria-describedby</code> attribute.
-
-{
-  /* <Typography id="modal-desc" textColor="text.tertiary">
-        Make sure to use <code>aria-labelledby</code> on the modal dialog with an
-        optional <code>aria-describedby</code> attribute.
-      </Typography> */
 }

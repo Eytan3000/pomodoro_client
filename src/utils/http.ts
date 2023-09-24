@@ -9,14 +9,16 @@ interface Task {
 }
 
 
-export async function getActiveTasks(signal: AbortSignal, token:string) {
-    const response = await fetch(url + 'tasks_active', { 
+
+
+export async function getActiveTasks(signal: AbortSignal, token: string) {
+    const response = await fetch(url + 'tasks_active', {
         signal,
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json', // You may need to adjust this based on your API's requirements
         },
-     });
+    });
 
     if (!response.ok) {
         const error = new Error('An error occurred while fetching the event');
@@ -26,9 +28,14 @@ export async function getActiveTasks(signal: AbortSignal, token:string) {
     return data;
 }
 
-export async function getDoneTasks() {
+export async function getDoneTasks(token: string) {
     try {
-        const response = await fetch(url + 'tasks_done');
+        const response = await fetch(url + 'tasks_done', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json', // You may need to adjust this based on your API's requirements
+            },
+        });
         const data = await response.json();
         return data;
     } catch (err) {
@@ -37,23 +44,26 @@ export async function getDoneTasks() {
 
 }
 
-export async function createTask(content: { content: string }) {
+export async function createTask(content: { content: string, token:string }) {
+
     const response = await fetch(url + 'task_create', {
         method: "POST",
         headers: {
+            Authorization: `Bearer ${content.token}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(content),
+        body: JSON.stringify({ content: content.content }),
     });
     const data = await response.json();
     return data;
 
 }
-export async function deleteTask(id: number) {
+export async function deleteTask(content:{id: number, token:string}) {
 
-    const response = await fetch(url + 'task_delete/' + id, {
+    const response = await fetch(url + 'task_delete/' + content.id, {
         method: "DELETE",
         headers: {
+            Authorization: `Bearer ${content.token}`,
             "Content-Type": "application/json",
         },
     });
@@ -119,8 +129,8 @@ export async function switchTaskStatus(object: { task: Task }) {
 }
 // Auth ------------------------------------------------------
 
-export async function insertNewUser(content: { email: string, password:string }) {
-    
+export async function insertNewUser(content: { email: string, password: string }) {
+
     const response = await fetch(url + 'users', {
         method: "POST",
         headers: {
@@ -128,14 +138,14 @@ export async function insertNewUser(content: { email: string, password:string })
         },
         body: JSON.stringify(content),
     });
-    
+
 
 
     return response;
 }
 
-export async function login(content: { email: string, password:string }) {
-    
+export async function login(content: { email: string, password: string }) {
+
     const response = await fetch(url + 'users/login', {
         method: "POST",
         headers: {
@@ -143,6 +153,6 @@ export async function login(content: { email: string, password:string }) {
         },
         body: JSON.stringify(content),
     });
-    
+
     return response;
 }

@@ -15,11 +15,8 @@ interface Task {
   status: 'active' | 'done';
 }
 //------------------------------------------------------------
-export default function Tasks() { 
-
-  const token = useSelector(
-    (state: RootState) => state.jwt.accessToken
-  );
+export default function Tasks() {
+  const token = useSelector((state: RootState) => state.jwt.accessToken);
 
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
@@ -28,26 +25,27 @@ export default function Tasks() {
   }
   function handleOkClick(content: string) {
     setIsAddTaskActive(false);
-    mutate({content});
+    mutate({ content, token } );
   }
 
-console.log(token);
+  // console.log(token);
 
-// -- React Mutation --------------
-const {mutate} = useMutation({
-  mutationFn:createTask,
-  onSuccess: ()=>{
-    queryClient.invalidateQueries({
-      queryKey:['active-tasks']
-    })
-  }
-})
-// -- React Query Active --------------
+  // -- React Mutation --------------
+  const { mutate } = useMutation({
+    mutationFn:createTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['active-tasks'],
+      });
+    },
+  });
+
+  // -- React Query Active --------------
   const tasksActiveQuery = useQuery<Task[], { message: string }>({
     queryKey: ['active-tasks'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-    queryFn: ({signal})=>getActiveTasks(signal, token),
+    // @ts-ignore
+    queryFn: ({ signal }) => getActiveTasks(signal, token),
   });
   let activeContent;
   if (tasksActiveQuery.isLoading) {
@@ -69,7 +67,7 @@ const {mutate} = useMutation({
     activeContent = (
       <Stack spacing={1} mt={2}>
         {tasksActiveQuery.data.map((task: Task) => (
-          <TaskCard task={task} keyNum={task.id} isActiveProp={true} />
+          <TaskCard key={task.id} task={task} keyNum={task.id} isActiveProp={true} />
         ))}
         {isAddTaskActive ? (
           <TextBox
@@ -88,7 +86,9 @@ const {mutate} = useMutation({
   // -- React Query Done --------------
   const tasksDoneQuery = useQuery<Task[], { message: string }>({
     queryKey: ['done-tasks'],
-    queryFn: getDoneTasks,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    queryFn: () => getDoneTasks(token),
   });
   let doneContent;
   if (tasksDoneQuery.isLoading) {
@@ -114,17 +114,13 @@ const {mutate} = useMutation({
         </Typography>
         <Divider sx={{ mt: 2 }} />
         {tasksDoneQuery.data.map((task: Task) => {
-          return (
-            <TaskCard task={task} keyNum={task.id} isActiveProp={false} />
-          );
+          return <TaskCard key={task.id} task={task} keyNum={task.id} isActiveProp={false} />;
         })}
       </Stack>
-    )}
-
-
+    );
+  }
 
   return (
-
     <Box display="flex" flexDirection="column" height="90%">
       {activeContent}
       {doneContent}

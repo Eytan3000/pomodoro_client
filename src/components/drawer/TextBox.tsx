@@ -13,6 +13,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
 import { FormLabel } from '@mui/joy';
 
+
 interface Props<T> {
   handleOkClick: (textContent: string) => void;
   task?: string;
@@ -28,6 +29,8 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
   const [comment, setComment] = useState('');
 
   const [textContent, setTextContent] = useState<string>(task);
+
+
 
   function handleSubmitTask(e?: React.FormEvent) {
     e?.preventDefault();

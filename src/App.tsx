@@ -21,13 +21,13 @@ import { jwtActions } from './store/index.ts';
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  // const [token, setToken] = useState<string>('');
 
 const dispatch = useDispatch();
 
   const auth = getAuth();
 
   useEffect(() => {
+    console.log('useEffect');
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
@@ -39,7 +39,7 @@ const dispatch = useDispatch();
         setIsLogged(false);
       }
     });
-  }, []);
+  }, [auth,dispatch]);
 
   return (
     <>

@@ -10,15 +10,8 @@ export interface RootState {
     tasksDone:string[];
     isEditing: boolean;
   };
-  jwt:{
-    accessToken: {
+  jwt:{ 
       accessToken:string
-    }
+
   }
 }
-
-// export const enum ButtonType {
-//   WORK = 'work',
-//   BREAK = 'break',
-//   REST = 'rest',
-// }

@@ -13,6 +13,8 @@ import { queryClient } from '../../utils/utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import TextBox from './textBox';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../utils/interfaces';
 
 //----------------------------------------------------------------
 interface Task {
@@ -30,9 +32,10 @@ export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(isActiveProp);
   const [isEditing, setIsEditing] = useState(false);
+  const token = useSelector((state: RootState) => state.jwt.accessToken);
 
   const { mutate } = useMutation({
-    mutationFn: (id: number) => deleteTask(id),
+    mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['active-tasks']
@@ -91,7 +94,7 @@ export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
   };
   const handleDelete = () => {
     // delete note in db
-    mutate(task.id);
+    mutate({id:task.id, token});
   };
   const handleOkClick = (textContent: string) => {
     setIsEditing(false);
