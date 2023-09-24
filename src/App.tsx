@@ -11,14 +11,39 @@ import theme from './utils/ExtendTheme';
 import { Box } from '@mui/system';
 import AppBar from './components/ui/AppBar';
 import Tasks from './components/drawer/Tasks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AuthModal from './components/auth/AuthModal.tsx';
+import { AuthProvider } from './contexts/AuthContext.tsx';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
+import { jwtActions } from './store/index.ts';
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  // const [token, setToken] = useState<string>('');
+
+const dispatch = useDispatch();
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+
+        dispatch(jwtActions.updateAccessToken(token)); //set redux state
+        setIsLogged(true);
+      } else {
+        console.log('No logged in user');
+        setIsLogged(false);
+      }
+    });
+  }, []);
+
   return (
     <>
+    <AuthProvider>
       <CssVarsProvider disableTransitionOnChange theme={theme}>
         <AppBar />
 
@@ -78,6 +103,7 @@ function App() {
           </Grid>
         </Grid>
       </CssVarsProvider>
+      </AuthProvider>
     </>
   );
 }

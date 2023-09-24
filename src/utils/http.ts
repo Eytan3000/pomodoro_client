@@ -20,8 +20,6 @@ export async function getActiveTasks(signal: AbortSignal, token:string) {
 
     if (!response.ok) {
         const error = new Error('An error occurred while fetching the event');
-        // error.code = response.status;
-        // error.info = await response.json();
         throw error;
     }
     const data = await response.json();

@@ -22,11 +22,11 @@ interface Task {
 }
 interface Props {
   task: Task;
-  key: number;
+  keyNum: number;
   isActiveProp: boolean;
 }
 //----------------------------------------------------------------
-export default function TaskCard({ task, key, isActiveProp }: Props) {
+export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(isActiveProp);
   const [isEditing, setIsEditing] = useState(false);
@@ -112,7 +112,7 @@ export default function TaskCard({ task, key, isActiveProp }: Props) {
   };
 
   return (
-    <Box display={'flex-grow'} justifyContent={'center'} key={key}>
+    <Box display={'flex-grow'} justifyContent={'center'} key={keyNum}>
       {isEditing ? (
         <TextBox
           handleOkClick={handleOkClick}
@@ -124,7 +124,7 @@ export default function TaskCard({ task, key, isActiveProp }: Props) {
           sx={{ minHeight: 58 }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          key={key}
+          key={keyNum}
           variant={isActive ? 'outlined' : 'soft'}>
           <Box sx={secondBoxSx}>
             <Checkbox

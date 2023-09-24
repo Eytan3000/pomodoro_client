@@ -16,10 +16,10 @@ interface Task {
 }
 //------------------------------------------------------------
 export default function Tasks() { 
-  const {accessToken} = useSelector(
+
+  const token = useSelector(
     (state: RootState) => state.jwt.accessToken
   );
-
 
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
@@ -28,10 +28,10 @@ export default function Tasks() {
   }
   function handleOkClick(content: string) {
     setIsAddTaskActive(false);
-    console.log(content);
     mutate({content});
   }
 
+console.log(token);
 
 // -- React Mutation --------------
 const {mutate} = useMutation({
@@ -47,7 +47,7 @@ const {mutate} = useMutation({
     queryKey: ['active-tasks'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-    queryFn: ({signal})=>getActiveTasks(signal, accessToken),
+    queryFn: ({signal})=>getActiveTasks(signal, token),
   });
   let activeContent;
   if (tasksActiveQuery.isLoading) {
@@ -69,7 +69,7 @@ const {mutate} = useMutation({
     activeContent = (
       <Stack spacing={1} mt={2}>
         {tasksActiveQuery.data.map((task: Task) => (
-          <TaskCard task={task} key={task.id} isActiveProp={true} />
+          <TaskCard task={task} keyNum={task.id} isActiveProp={true} />
         ))}
         {isAddTaskActive ? (
           <TextBox
@@ -115,7 +115,7 @@ const {mutate} = useMutation({
         <Divider sx={{ mt: 2 }} />
         {tasksDoneQuery.data.map((task: Task) => {
           return (
-            <TaskCard task={task} key={task.id} isActiveProp={false} />
+            <TaskCard task={task} keyNum={task.id} isActiveProp={false} />
           );
         })}
       </Stack>
