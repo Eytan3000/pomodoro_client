@@ -87,7 +87,7 @@ export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
   const handleClickCheckbox = () => {
     setIsActive((prev) => !prev);
     // update db: remove task from Active and add to Done
-    mutateSwitchStatus({task:task})
+    mutateSwitchStatus({task:task, token:token})
   };
   const handleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -100,7 +100,7 @@ export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
     setIsEditing(false);
 
     //update new note in db.
-    textContentMutate({ id: task.id, textContent });
+    textContentMutate({ id: task.id, textContent, token });
   };
 
   // css sx prop

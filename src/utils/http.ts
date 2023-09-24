@@ -76,14 +76,16 @@ export async function deleteTask(content:{id: number, token:string}) {
     return response;
 }
 
-export async function editTask(object: { id: number, textContent: string }) {
+export async function editTask(object: { id: number, textContent: string, token:string }) {
 
     const content = { content: object.textContent };
     const id = object.id;
+    const token = object.token;
 
     const response = await fetch(url + 'task_edit/' + id, {
         method: "PATCH",
         headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
         body: JSON.stringify(content)
@@ -98,8 +100,9 @@ export async function editTask(object: { id: number, textContent: string }) {
 
 }
 
-export async function switchTaskStatus(object: { task: Task }) {
+export async function switchTaskStatus(object: { task: Task, token:string }) {
     const id = object.task.id;
+    const token = object.token;
     let response;
 
     if (object.task.status === 'active') {
@@ -107,6 +110,7 @@ export async function switchTaskStatus(object: { task: Task }) {
         response = await fetch(url + 'task_status_toDone/' + id, {
             method: "GET",
             headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             }
         });
@@ -116,6 +120,7 @@ export async function switchTaskStatus(object: { task: Task }) {
         response = await fetch(url + 'task_status_toActive/' + id, {
             method: "GET",
             headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             }
         });
