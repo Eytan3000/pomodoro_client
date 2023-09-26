@@ -12,23 +12,29 @@ import { useState } from 'react';
 import ReportIcon from '@mui/icons-material/Report';
 import AlertBox from '../ui/AlertBox';
 import { useAuth } from '../../contexts/AuthContext';
+import { useDispatch } from 'react-redux';
+import { generalActions } from '../../store';
+import { current } from '@reduxjs/toolkit';
+import { User } from 'firebase/auth';
 //-----------------------------------------------------------
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
-  setIsLogged: (isLogged: boolean) => void;
 }
 interface AuthMethods {
+  currentUser: User | null | undefined;
   signup: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logOut: () => void;
+  resetPassword: () => void;
 }
 interface ErrorType {
   code: string;
 }
 //-----------------------------------------------------------
-export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
-  const { signup, login, logOut }: AuthMethods = useAuth();
+export default function AuthModal({ open, setOpen }: Props) {
+  const dispatch = useDispatch();
+  const { currentUser, signup, login, logOut, resetPassword }: AuthMethods = useAuth();
 
   const [isLoginModal, setIsLoginModal] = useState<boolean>(true);
   const [email, setEmail] = useState<string>('');
@@ -109,13 +115,22 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
     // Firebase:
     try {
       await login(email, password);
-      setIsLogged(true);
+      dispatch(generalActions.changeIsLoggedStatus(true));
       setOpen(false);
     } catch (error: unknown) {
       const myError = error as ErrorType;
       if (myError.code === 'auth/invalid-login-credentials') {
         setErrorTitle('Incorrect email or password');
       }
+    }
+  }
+
+  async function handleForgotPassword() {
+    try {
+      const x = await resetPassword();
+      console.log(x);
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -180,6 +195,15 @@ export default function AuthModal({ open, setOpen, setIsLogged }: Props) {
                   textColor="text.tertiary">
                   <a href="#" onClick={() => setIsLoginModal(false)}>
                     Sign Up
+                  </a>
+                </Typography>
+                <Typography
+                  level="body-sm"
+                  textAlign={'center'}
+                  id="modal-desc"
+                  textColor="text.tertiary">
+                  <a href="#" onClick={handleForgotPassword}>
+                    Forgot Password{' '}
                   </a>
                 </Typography>
                 {errorTitle !== '' && (

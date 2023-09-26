@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Stack, Typography } from '@mui/joy';
 import TaskCard from './TaskCard';
-import TextBox from './textBox';
+import TextBox from './TextBox';
 import { useState } from 'react';
 import { createTask, getActiveTasks, getDoneTasks } from '../../utils/http';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -25,18 +25,21 @@ export default function Tasks() {
   }
   function handleOkClick(content: string) {
     setIsAddTaskActive(false);
-    mutate({ content, token } );
+    createTaskMutate({ content, token } );
   }
 
   // console.log(token);
 
   // -- React Mutation --------------
-  const { mutate } = useMutation({
+  const { mutate: createTaskMutate } = useMutation({
     mutationFn:createTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['active-tasks'],
-      });
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({
+    //     queryKey: ['active-tasks'],
+    //   });
+    // },
+    onSettled: () => {
+      queryClient.invalidateQueries(['active-tasks']);
     },
   });
 

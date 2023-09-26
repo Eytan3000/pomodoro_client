@@ -9,31 +9,47 @@ import { useEffect, useState } from 'react';
 import AuthModal from './components/auth/AuthModal.tsx';
 import { AuthProvider } from './contexts/AuthContext.tsx';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useDispatch } from 'react-redux';
-import { jwtActions } from './store/index.ts';
+import { useDispatch, useSelector } from 'react-redux';
+import { generalActions, jwtActions } from './store/index.ts';
+import LoadingComponent from './components/auth/LoadingComponent.tsx';
+import { RootState } from './utils/interfaces.ts';
 
 function App() {
-  const [isLogged, setIsLogged] = useState<boolean>(false);
+
+const isLogged = useSelector((state:RootState) =>state.general.isLogged);
+
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const auth = getAuth();
 
   useEffect(() => {
+    setIsLoading(true);
     console.log('useEffect');
+    console.log(auth);
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
 
         dispatch(jwtActions.updateAccessToken(token)); //set redux state
-        setIsLogged(true);
+        // setIsLogged(true);
+        dispatch(generalActions.changeIsLoggedStatus(true));
+        setIsLoading(false);
       } else {
         console.log('No logged in user');
-        setIsLogged(false);
+        // setIsLogged(false);
+        dispatch(generalActions.changeIsLoggedStatus(false));
+        setIsLoading(false);
       }
     });
   }, [auth, dispatch]);
+
+  // if (isLoading === true) {
+  //   // While waiting for authentication check, display loading or placeholder
+  //   return <LoadingComponent />;
+  // }
 
   return (
     <>
@@ -45,7 +61,7 @@ function App() {
             <AuthModal
               open={modalOpen}
               setOpen={setModalOpen}
-              setIsLogged={setIsLogged}
+              // setIsLogged={setIsLogged}
             />
           )}
 
@@ -85,8 +101,15 @@ function App() {
                   Tasks
                 </Typography>
                 <Divider sx={{ mt: 2 }} />
-
-                {isLogged ? (
+                {isLoading ? (
+                  <>
+                    <LoadingComponent />
+                    <LoadingComponent />
+                    <LoadingComponent />
+                    <LoadingComponent />
+                    <LoadingComponent />
+                  </>
+                ) : isLogged ? (
                   <Tasks />
                 ) : (
                   <Typography level="body-lg" textAlign={'center'} m={2}>

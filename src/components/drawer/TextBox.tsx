@@ -123,7 +123,6 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
             </Box>
           }
           sx={{
-            minWidth: 300,
             fontWeight,
             fontStyle: italic ? 'italic' : 'initial',
           }}

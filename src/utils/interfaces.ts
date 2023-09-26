@@ -12,6 +12,9 @@ export interface RootState {
   };
   jwt:{ 
       accessToken:string
+  };
+  general:{ 
+      isLogged:boolean
 
-  }
+  };
 }

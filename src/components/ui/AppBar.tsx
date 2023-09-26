@@ -1,13 +1,14 @@
 import { Box, Button, Typography } from '@mui/joy';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import AccountMenu from './AccountMenu';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../utils/interfaces';
 import { useAuth } from '../../contexts/AuthContext';
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 export default function AppBar() {
-  const { logOut } = useAuth();
-  function handleLogOut() {
-    logOut();
-  }
+  const { currentUser, reAuthenticate } = useAuth();
+  const isLogged = useSelector((state: RootState) => state.general.isLogged);
 
   return (
     <div
@@ -27,12 +28,7 @@ export default function AppBar() {
       </Typography>
 
       <Box display="flex" justifyContent={'space-between'} mt={1}>
-        {/* <Typography level='body-md' sx={{ marginTop: 0.4 }}>
-        Log Out
-      </Typography> */}
-        <Button variant="plain" onClick={handleLogOut}>
-          Log Out
-        </Button>
+        {isLogged && <AccountMenu />}
         <VolumeUpIcon style={{ marginRight: 40, marginLeft: 30 }} />
         {/* <VolumeOffIcon style={{marginRight:40, marginTop:6}}/> */}
       </Box>

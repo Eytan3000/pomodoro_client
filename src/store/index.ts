@@ -77,17 +77,33 @@ const jwtSlice = createSlice({
     }
 
 })
+//-----------------------------
+
+const initialGeneralState = { isLogged:false};
+
+const generalSlice = createSlice({
+    name: 'general',
+    initialState: initialGeneralState,
+    reducers: {
+        changeIsLoggedStatus(state, action) {
+            state.isLogged= action.payload;
+        }
+    }
+
+})
 
 
 const store = configureStore({
     reducer: {
         timer: timerSlice.reducer,
         drawer: drawerSlice.reducer,
-        jwt: jwtSlice.reducer
+        jwt: jwtSlice.reducer,
+        general: generalSlice.reducer
     },
 });
 
 export const timerActions = timerSlice.actions;
 export const drawerActions = drawerSlice.actions;
 export const jwtActions = jwtSlice.actions;
+export const generalActions = generalSlice.actions;
 export default store;

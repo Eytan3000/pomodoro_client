@@ -10,9 +10,8 @@ import IconButton from '@mui/joy/IconButton';
 import { useMutation } from '@tanstack/react-query';
 import { deleteTask, editTask, switchTaskStatus } from '../../utils/http';
 import { queryClient } from '../../utils/utils';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import TextBox from './textBox';
+
+import TextBox from './TextBox';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../utils/interfaces';
 
