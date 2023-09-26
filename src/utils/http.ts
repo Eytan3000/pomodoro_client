@@ -134,30 +134,30 @@ export async function switchTaskStatus(object: { task: Task, token:string }) {
 }
 // Auth ------------------------------------------------------
 
-export async function insertNewUser(content: { email: string, password: string }) {
+// export async function insertNewUser(content: { email: string, password: string }) {
 
-    const response = await fetch(url + 'users', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(content),
-    });
+//     const response = await fetch(url + 'users', {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(content),
+//     });
 
 
 
-    return response;
-}
+//     return response;
+// }
 
-export async function login(content: { email: string, password: string }) {
+// export async function login(content: { email: string, password: string }) {
 
-    const response = await fetch(url + 'users/login', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(content),
-    });
+//     const response = await fetch(url + 'users/login', {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(content),
+//     });
 
-    return response;
-}
+//     return response;
+// }

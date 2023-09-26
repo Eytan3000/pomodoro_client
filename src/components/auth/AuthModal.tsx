@@ -14,7 +14,6 @@ import AlertBox from '../ui/AlertBox';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDispatch } from 'react-redux';
 import { generalActions } from '../../store';
-import { current } from '@reduxjs/toolkit';
 import { User } from 'firebase/auth';
 //-----------------------------------------------------------
 interface Props {
@@ -55,29 +54,10 @@ export default function AuthModal({ open, setOpen }: Props) {
   async function handleSignupSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
 
-    // --jwt auth:--
-    // const userDetails = {
-    //   email: email,
-    //   password: password,
-    // };
-    // const response = await insertNewUser(userDetails);
-
-    // if (response.status === 400) {
-    //   const errorMessage = await response.text();
-    //   setErrorTitle(errorMessage);
-    // }
-
-    // if (response.status === 201) {
-    //   setIsLoginModal(true);
-    // }
-
-    // ADD verification for password
-
-    // -- Firebase: --
-
     try {
-      const res = await signup(email, password);
-      console.log(res._tokenResponse.idToken);
+      await signup(email, password);
+      // const res = await signup(email, password);
+      // console.log(res._tokenResponse.idToken);
       setIsLoginModal(true);
     } catch (error: unknown) {
       const myError = error as ErrorType;
@@ -90,27 +70,6 @@ export default function AuthModal({ open, setOpen }: Props) {
   //Login
   async function handleLoginSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-
-    // const userDetails = {
-    //   email: email,
-    //   password: password,
-    // };
-    // const response = await login(userDetails);
-
-    // if (response.status === 400) {
-    //   const errorMessage = await response.text();
-    //   setErrorTitle(errorMessage);
-    // }
-
-    // if (response.status === 201) {
-    //   const data = await response.json();
-
-    //   // console.log(data); //access token jwt
-    //   dispatch(jwtActions.updateAccessToken(data));
-
-    //   setIsLogged(true);
-    //   setOpen(false);
-    // }
 
     // Firebase:
     try {

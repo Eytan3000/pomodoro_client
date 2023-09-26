@@ -132,7 +132,6 @@ export default function TaskCard({ task, keyNum, isActiveProp }: Props) {
             <Checkbox
               onChange={handleClickCheckbox}
               checked={!isActive}
-              // disabled={false}
               size="md"
               sx={{ marginRight: 2 }}
             />
