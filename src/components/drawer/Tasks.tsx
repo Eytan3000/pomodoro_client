@@ -1,12 +1,13 @@
 import { Box, Button, Divider, Stack, Typography } from '@mui/joy';
 import TaskCard from './TaskCard';
 import TextBox from './TextBox';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createTask, getActiveTasks, getDoneTasks } from '../../utils/http';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../utils/utils';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../utils/interfaces';
+import { useAuth } from '../../contexts/AuthContext';
 
 //------------------------------------------------------------
 interface Task {
@@ -20,15 +21,41 @@ export default function Tasks() {
 
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
+  const { currentUser } = useAuth();
+  const uid = currentUser.uid;
+
+
+
+  // Function to handle the "c" key press
+  function handleKeyPress(event: KeyboardEvent) {
+    if (event.key === 'c') {
+      handleAddTask();
+    }
+    if (event.key === 'Escape') {
+      setIsAddTaskActive(false);
+    }
+  }
+
+  useEffect(() => {
+    // Add a global event listener for the "keydown" event
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+
   function handleAddTask() {
     setIsAddTaskActive(true);
   }
   function handleOkClick(content: string) {
+    // const uid = currentUser.uid;
     setIsAddTaskActive(false);
-    createTaskMutate({ content, token } );
+    createTaskMutate({ content, token, uid } );
   }
 
-  // console.log(token);
 
   // -- React Mutation --------------
   const { mutate: createTaskMutate } = useMutation({
@@ -48,7 +75,7 @@ export default function Tasks() {
     queryKey: ['active-tasks'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    queryFn: ({ signal }) => getActiveTasks(signal, token),
+    queryFn: ({ signal }) => getActiveTasks(signal, token, uid),
   });
   let activeContent;
   if (tasksActiveQuery.isLoading) {
@@ -91,7 +118,7 @@ export default function Tasks() {
     queryKey: ['done-tasks'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    queryFn: () => getDoneTasks(token),
+    queryFn: () => getDoneTasks(token, uid),
   });
   let doneContent;
   if (tasksDoneQuery.isLoading) {

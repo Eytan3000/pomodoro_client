@@ -54,7 +54,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       currentUser.email,
       password
     );
-    // console.log(credential);
     const result = await reauthenticateWithCredential(currentUser, credential);
     return result;
   }

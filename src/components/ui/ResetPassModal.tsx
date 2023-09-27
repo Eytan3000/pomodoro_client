@@ -68,6 +68,7 @@ export default function ResetPassModal({ open, setOpen }: Props) {
       const x = await changePassword(newPassword);
       console.log(x);
       setOpen(false);
+
     } catch (err) {
       console.log(err);
       if (err.code === 'auth/requires-recent-login') {
@@ -89,8 +90,7 @@ export default function ResetPassModal({ open, setOpen }: Props) {
 
     try {
       // reauth
-      const result = await reAuthenticate(oldPassword);
-      console.log(result);
+      await reAuthenticate(oldPassword);
       await handleSubmit();
       setOpen(false);
     } catch (err) {
@@ -175,8 +175,9 @@ export default function ResetPassModal({ open, setOpen }: Props) {
               }}>
               <Input
                 name="Outlined"
-                placeholder="Old password"
+                placeholder="Enter current password"
                 // type="password"
+                value={oldPassword}
                 variant="outlined"
                 onChange={oldPasswordChangeHandler}
               />

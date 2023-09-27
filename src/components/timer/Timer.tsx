@@ -14,11 +14,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { timerActions } from '../../store';
 import { RootState } from '../../utils/interfaces';
 import IntervalNumber from './IntervalNumber';
+import count from './../../assets/Audio/temp/count.wav';
+import rest from './../../assets/Audio/temp/rest.wav';
+import work from './../../assets/Audio/temp/work.wav';
 //-------------------------------------------------------------------
 const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
 //-------------------------------------------------------------------
 const Timer = () => {
-  // console.log('timer render');
   const dispatch = useDispatch();
 
   const [intervalNum, setIntervalNum] = useState(0);
@@ -70,10 +72,6 @@ const Timer = () => {
         setIntervalNum((i) => i + 1);
         setKeyForRestart((prev) => prev + 1);
       }
-      // if (timerType === 'rest') {
-      //   dispatch(timerActions.settoggleTimerType('work'));
-      //   dispatch(timerActions.setTimerDurationWork());
-      // }
     } else {
       dispatch(timerActions.settoggleTimerType('rest'));
       dispatch(timerActions.setTimerDurationRest());
@@ -83,6 +81,26 @@ const Timer = () => {
 
     return { shouldRepeat: true };
   };
+
+  function playCount() {
+    new Audio(count).play();
+  }
+  function playRest() {
+    new Audio(rest).play();
+  }
+  function playWork() {
+    new Audio(work).play();
+  }
+  function onUpdateHandler(remainingTime: number) {
+    // if (remainingTime === 3) console.log('3');
+    if (remainingTime === 3) playCount();
+    if (remainingTime === 2) playCount();
+    if (remainingTime === 1) playCount();
+    // when timer turn to 0, the timerType is still on the previouse state.
+    if (remainingTime === 0 && timerType === 'break') playWork();
+    if (remainingTime === 0 && timerType === 'rest') playWork();
+    if (remainingTime === 0 && timerType === 'work') playRest();
+  }
   return (
     <Box>
       <TimerTypeToggle />
@@ -99,7 +117,8 @@ const Timer = () => {
           // @ts-ignore
           colors={timerColors}
           colorsTime={[7, 5, 2, 0]}
-          onComplete={handleOnComplete}>
+          onComplete={handleOnComplete}
+          onUpdate={onUpdateHandler}>
           {({ remainingTime }) => formatTime(remainingTime)}
         </CountdownCircleTimer>
       </Typography>

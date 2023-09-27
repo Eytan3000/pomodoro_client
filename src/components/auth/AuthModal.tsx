@@ -12,9 +12,11 @@ import { useState } from 'react';
 import ReportIcon from '@mui/icons-material/Report';
 import AlertBox from '../ui/AlertBox';
 import { useAuth } from '../../contexts/AuthContext';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { generalActions } from '../../store';
 import { User } from 'firebase/auth';
+import { insertNewUserIntoDb } from '../../utils/http';
+import { RootState } from '../../utils/interfaces';
 //-----------------------------------------------------------
 interface Props {
   open: boolean;
@@ -25,7 +27,7 @@ interface AuthMethods {
   signup: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logOut: () => void;
-  resetPassword: () => void;
+  resetPassword: (email: string) => void;
 }
 interface ErrorType {
   code: string;
@@ -34,12 +36,13 @@ interface ErrorType {
 export default function AuthModal({ open, setOpen }: Props) {
   const dispatch = useDispatch();
   const { currentUser, signup, login, logOut, resetPassword }: AuthMethods = useAuth();
-
+  const token = useSelector((state: RootState) => state.jwt.accessToken);
   const [isLoginModal, setIsLoginModal] = useState<boolean>(true);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const [errorTitle, setErrorTitle] = useState<string>('');
+  const [forgotPass, setForgotPass] = useState<boolean>(false);
 
   function emailChangeHandler(e: React.FormEvent<HTMLInputElement>) {
     setEmail(e.currentTarget.value);
@@ -55,14 +58,25 @@ export default function AuthModal({ open, setOpen }: Props) {
     event.preventDefault();
 
     try {
-      await signup(email, password);
-      // const res = await signup(email, password);
+      // const x =await signup(email, password);
+
+      const res = await signup(email, password);
       // console.log(res._tokenResponse.idToken);
-      setIsLoginModal(true);
+      console.log(res);
+      if(res){
+        insertNewUserIntoDb(res.user.uid, res.user.email,token);
+      }
+      
+      // setIsLoginModal(true);
+      setOpen(false);
     } catch (error: unknown) {
+      // console.log(error);
       const myError = error as ErrorType;
       if (myError.code === 'auth/email-already-in-use') {
         setErrorTitle('Email already in use');
+      }
+      if (myError.code === 'auth/weak-password') {
+        setErrorTitle('Password should be at least 6 characters');
       }
     }
   }
@@ -74,6 +88,7 @@ export default function AuthModal({ open, setOpen }: Props) {
     // Firebase:
     try {
       await login(email, password);
+      // console.log(res.user.uid);
       dispatch(generalActions.changeIsLoggedStatus(true));
       setOpen(false);
     } catch (error: unknown) {
@@ -84,10 +99,12 @@ export default function AuthModal({ open, setOpen }: Props) {
     }
   }
 
-  async function handleForgotPassword() {
+  //forgot password
+  async function handleForgotPassword(event: React.SyntheticEvent) {
+    event.preventDefault();
     try {
-      const x = await resetPassword();
-      console.log(x);
+      await resetPassword(email);
+      setForgotPass(false)
     } catch (err) {
       console.log(err);
     }
@@ -119,10 +136,10 @@ export default function AuthModal({ open, setOpen }: Props) {
               fontWeight="lg"
               mb={1}
               textAlign={'center'}>
-              Login
+              {forgotPass ? "Reset Password" : "Login"}
             </Typography>
 
-            <form onSubmit={handleLoginSubmit}>
+            <form onSubmit={forgotPass ? handleForgotPassword : handleLoginSubmit}>
               <Box
                 sx={{
                   py: 2,
@@ -138,13 +155,13 @@ export default function AuthModal({ open, setOpen }: Props) {
                   variant="outlined"
                   onChange={emailChangeHandler}
                 />
-                <Input
+                {!forgotPass && <Input
                   name="Outlined"
                   placeholder="Password"
                   type="password"
                   variant="outlined"
                   onChange={passwordChangeHandler}
-                />
+                />}
                 <Button type="submit">Submit</Button>
 
                 <Typography
@@ -156,15 +173,24 @@ export default function AuthModal({ open, setOpen }: Props) {
                     Sign Up
                   </a>
                 </Typography>
-                <Typography
+                {!forgotPass &&  <Typography
                   level="body-sm"
                   textAlign={'center'}
                   id="modal-desc"
                   textColor="text.tertiary">
-                  <a href="#" onClick={handleForgotPassword}>
+                  <a href="#" onClick={()=>setForgotPass(true)}>
                     Forgot Password{' '}
                   </a>
-                </Typography>
+                </Typography> }
+                {forgotPass &&  <Typography
+                  level="body-sm"
+                  textAlign={'center'}
+                  id="modal-desc"
+                  textColor="text.tertiary">
+                  <a href="#" onClick={()=>setForgotPass(false)}>
+                    Login{' '}
+                  </a>
+                </Typography> }
                 {errorTitle !== '' && (
                   <AlertBox
                     title={errorTitle}
@@ -237,3 +263,4 @@ export default function AuthModal({ open, setOpen }: Props) {
     </Modal>
   );
 }
+

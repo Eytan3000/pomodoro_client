@@ -1,4 +1,11 @@
-import { CssVarsProvider, Divider, Grid, Sheet, Typography } from '@mui/joy';
+import {
+  Button,
+  CssVarsProvider,
+  Divider,
+  Grid,
+  Sheet,
+  Typography,
+} from '@mui/joy';
 import './App.css';
 import Timer from './components/timer/Timer';
 import theme from './utils/ExtendTheme';
@@ -15,8 +22,7 @@ import LoadingComponent from './components/auth/LoadingComponent.tsx';
 import { RootState } from './utils/interfaces.ts';
 
 function App() {
-
-const isLogged = useSelector((state:RootState) =>state.general.isLogged);
+  const isLogged = useSelector((state: RootState) => state.general.isLogged);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +34,7 @@ const isLogged = useSelector((state:RootState) =>state.general.isLogged);
   useEffect(() => {
     setIsLoading(true);
     console.log('useEffect');
-    console.log(auth);
+    // console.log(auth);
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
@@ -45,11 +51,6 @@ const isLogged = useSelector((state:RootState) =>state.general.isLogged);
       }
     });
   }, [auth, dispatch]);
-
-  // if (isLoading === true) {
-  //   // While waiting for authentication check, display loading or placeholder
-  //   return <LoadingComponent />;
-  // }
 
   return (
     <>
@@ -110,7 +111,9 @@ const isLogged = useSelector((state:RootState) =>state.general.isLogged);
                     <LoadingComponent />
                   </>
                 ) : isLogged ? (
-                  <Tasks />
+                  <>
+                    <Tasks />
+                  </>
                 ) : (
                   <Typography level="body-lg" textAlign={'center'} m={2}>
                     Please{' '}

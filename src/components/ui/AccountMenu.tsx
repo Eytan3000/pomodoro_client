@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 export default function AccountMenu() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const { logOut } = useAuth();
+  const { currentUser, logOut } = useAuth();
   function handleLogOut() {
     logOut();
   }
@@ -19,19 +19,17 @@ export default function AccountMenu() {
 
   return (
     <>
-      {modalOpen && (
-        <ResetPassModal
-          open={modalOpen}
-          setOpen={setModalOpen}
-        />
-      )}
+      {modalOpen && <ResetPassModal open={modalOpen} setOpen={setModalOpen} />}
 
       <Dropdown>
         <MenuButton size="sm" sx={{ ml: 2, borderRadius: 30 }}>
-          <Typography>M</Typography>
+          <Typography>{currentUser.email[0].toUpperCase()}</Typography>
         </MenuButton>
 
         <Menu>
+          <MenuItem>
+            <Typography level='body-xs'>{currentUser.email}</Typography>
+          </MenuItem>
           <MenuItem onClick={handleChangePassword}>Change password</MenuItem>
           <MenuItem onClick={handleLogOut}>Log out</MenuItem>
           {/* <MenuItem>Logout</MenuItem> */}

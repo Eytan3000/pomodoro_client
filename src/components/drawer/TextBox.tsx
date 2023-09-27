@@ -13,6 +13,9 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
 import { FormLabel } from '@mui/joy';
 
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
+
 
 interface Props<T> {
   handleOkClick: (textContent: string) => void;
@@ -27,9 +30,10 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
   const [fontWeight, setFontWeight] = useState('normal');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState('');
-
+  
   const [textContent, setTextContent] = useState<string>(task);
-
+  
+  const [rtl, setRtl] = useState(false);
 
 
   function handleSubmitTask(e?: React.FormEvent) {
@@ -46,7 +50,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
     if (event.key === 'Escape') {
       setExit?.(); //call the function only if it exists
     }
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
       handleSubmitTask();
     }
   }
@@ -85,7 +89,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
+                open={Boolean(anchorEl)}  
                 onClose={() => setAnchorEl(null)}
                 size="sm"
                 placement="bottom-start"
@@ -117,6 +121,15 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
                 onClick={() => setItalic((bool) => !bool)}>
                 <FormatItalic />
               </IconButton>
+
+              <IconButton
+                // variant={rtl ? 'soft' : 'plain'}
+                // color={rtl ? 'primary' : 'neutral'}
+                aria-pressed={rtl}
+                onClick={() => setRtl((bool) => !bool)}>
+                {rtl ? <FormatAlignRightIcon /> : <FormatAlignLeftIcon />}
+              </IconButton>
+
               <Button sx={{ ml: 'auto' }} type="submit">
                 Ok
               </Button>
@@ -125,6 +138,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
           sx={{
             fontWeight,
             fontStyle: italic ? 'italic' : 'initial',
+            direction: rtl ? 'rtl' : 'ltr'
           }}
         />
         <FormLabel>{comment}</FormLabel>
