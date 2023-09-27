@@ -26,7 +26,7 @@ interface Props {
 // }
 //-----------------------------------------------------------
 export default function ResetPassModal({ open, setOpen }: Props) {
-  const { currentUser, changePassword, reAuthenticate } = useAuth();
+  const {  changePassword, reAuthenticate }:any = useAuth();
 
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -65,11 +65,10 @@ export default function ResetPassModal({ open, setOpen }: Props) {
       return;
     }
     try {
-      const x = await changePassword(newPassword);
-      console.log(x);
+      await changePassword(newPassword);
       setOpen(false);
 
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
       if (err.code === 'auth/requires-recent-login') {
         setNeedsAuth(true);
@@ -94,7 +93,6 @@ export default function ResetPassModal({ open, setOpen }: Props) {
       await handleSubmit();
       setOpen(false);
     } catch (err) {
-      console.log(err);
       setErrorTitle('Failed to reset password');
     }
   }

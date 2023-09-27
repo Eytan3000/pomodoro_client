@@ -55,8 +55,6 @@ export async function createTask(content: { content: string, token: string, uid:
         body: JSON.stringify({ content: content.content, uid: content.uid }),
     });
     const data = await response.json();
-    // console.log(data);
-    
     return data;
 
 }

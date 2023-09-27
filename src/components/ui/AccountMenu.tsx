@@ -10,6 +10,8 @@ import { useState } from 'react';
 export default function AccountMenu() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { currentUser, logOut } = useAuth();
+const [emailCapitalLetter] = useState(currentUser.email[0].toUpperCase());
+
   function handleLogOut() {
     logOut();
   }
@@ -23,7 +25,7 @@ export default function AccountMenu() {
 
       <Dropdown>
         <MenuButton size="sm" sx={{ ml: 2, borderRadius: 30 }}>
-          <Typography>{currentUser.email[0].toUpperCase()}</Typography>
+          <Typography>{emailCapitalLetter}</Typography>
         </MenuButton>
 
         <Menu>

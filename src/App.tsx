@@ -1,5 +1,4 @@
 import {
-  Button,
   CssVarsProvider,
   Divider,
   Grid,
@@ -33,19 +32,14 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log('useEffect');
-    // console.log(auth);
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
 
         dispatch(jwtActions.updateAccessToken(token)); //set redux state
-        // setIsLogged(true);
         dispatch(generalActions.changeIsLoggedStatus(true));
         setIsLoading(false);
       } else {
-        console.log('No logged in user');
-        // setIsLogged(false);
         dispatch(generalActions.changeIsLoggedStatus(false));
         setIsLoading(false);
       }

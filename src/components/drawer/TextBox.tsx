@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
@@ -16,7 +16,6 @@ import { FormLabel } from '@mui/joy';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 
-
 interface Props<T> {
   handleOkClick: (textContent: string) => void;
   task?: string;
@@ -30,20 +29,24 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
   const [fontWeight, setFontWeight] = useState('normal');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState('');
-  
-  const [textContent, setTextContent] = useState<string>(task);
-  
-  const [rtl, setRtl] = useState(false);
 
+  // const ref = useRef();
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+
+  // const [textContent, setTextContent] = useState<string>(task);
+
+  const [rtl, setRtl] = useState(false);
 
   function handleSubmitTask(e?: React.FormEvent) {
     e?.preventDefault();
+    const text = ref.current?.value.trim();
 
-    if (textContent.trim() === '') {
+    if (text === '') {
       setComment('No Empty Input');
       return;
     }
-    handleOkClick(textContent);
+    // handleOkClick(textContent);
+    handleOkClick(text);
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -54,9 +57,11 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
       handleSubmitTask();
     }
   }
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  function handleChange(
+    // e: React.ChangeEvent<HTMLTextAreaElement>
+    ) {
     setComment('');
-    setTextContent(e.currentTarget.value);
+    // setTextContent(e.currentTarget.value);
   }
 
   return (
@@ -66,6 +71,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
           placeholder="Type something here…"
           onChange={handleChange}
           defaultValue={task}
+          slotProps={{ textarea: { ref } }}
           minRows={3}
           onKeyDown={handleKeyDown}
           endDecorator={
@@ -89,7 +95,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}  
+                open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
                 size="sm"
                 placement="bottom-start"
@@ -138,7 +144,7 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
           sx={{
             fontWeight,
             fontStyle: italic ? 'italic' : 'initial',
-            direction: rtl ? 'rtl' : 'ltr'
+            direction: rtl ? 'rtl' : 'ltr',
           }}
         />
         <FormLabel>{comment}</FormLabel>

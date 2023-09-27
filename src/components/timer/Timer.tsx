@@ -92,7 +92,6 @@ const Timer = () => {
     new Audio(work).play();
   }
   function onUpdateHandler(remainingTime: number) {
-    // if (remainingTime === 3) console.log('3');
     if (remainingTime === 3) playCount();
     if (remainingTime === 2) playCount();
     if (remainingTime === 1) playCount();
