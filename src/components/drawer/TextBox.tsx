@@ -90,7 +90,6 @@ export default function TextBox({ handleOkClick, task }: Props) {
                 onClick={(event) => setAnchorEl(event.currentTarget)}>
                 <FormatBold />
                 <KeyboardArrowDown
-                // fontSize="md"
                 />
               </IconButton>
               <Menu
@@ -111,9 +110,7 @@ export default function TextBox({ handleOkClick, task }: Props) {
                     sx={{ fontWeight: weight }}>
                     <ListItemDecorator>
                       {fontWeight === weight && (
-                        <Check
-                        //  fontSize="sm"
-                        />
+                        <Check />
                       )}
                     </ListItemDecorator>
                     {weight === '200' ? 'lighter' : weight}
@@ -129,8 +126,6 @@ export default function TextBox({ handleOkClick, task }: Props) {
               </IconButton>
 
               <IconButton
-                // variant={rtl ? 'soft' : 'plain'}
-                // color={rtl ? 'primary' : 'neutral'}
                 aria-pressed={rtl}
                 onClick={() => setRtl((bool) => !bool)}>
                 {rtl ? <FormatAlignRightIcon /> : <FormatAlignLeftIcon />}

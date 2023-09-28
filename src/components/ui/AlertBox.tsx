@@ -24,11 +24,6 @@ export default function AlertBox({
         startDecorator={icon}
         variant="soft"
         color={color}
-        // endDecorator={
-        //   <IconButton variant="soft" color={color}>
-        //     <CloseRoundedIcon />
-        //   </IconButton>
-        // }
         >
         {title}
       </Alert>

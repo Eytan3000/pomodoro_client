@@ -19,11 +19,6 @@ interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
-// interface AuthMethods {
-//   signup: (email: string, password: string) => void;
-//   login: (email: string, password: string) => void;
-//   logOut: () => void;
-// }
 //-----------------------------------------------------------
 export default function ResetPassModal({ open, setOpen }: Props) {
   const {  changePassword, reAuthenticate }:any = useAuth();
@@ -52,8 +47,6 @@ export default function ResetPassModal({ open, setOpen }: Props) {
   //Login
   async function handleSubmit(event?: React.SyntheticEvent) {
     event?.preventDefault();
-
-    // need to check if old password is correct
 
     // checks:
     if (newPassword.trim() === '' || passwordConfirm.trim() === '') {
@@ -174,7 +167,7 @@ export default function ResetPassModal({ open, setOpen }: Props) {
               <Input
                 name="Outlined"
                 placeholder="Enter current password"
-                // type="password"
+                type="password"
                 value={oldPassword}
                 variant="outlined"
                 onChange={oldPasswordChangeHandler}

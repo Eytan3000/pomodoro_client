@@ -23,8 +23,6 @@ import work from './../../assets/Audio/work.mp3';
 const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
 //-------------------------------------------------------------------
 const Timer = () => {
-  // console.log('timer');
-
   const dispatch = useDispatch();
 
   const [intervalNum, setIntervalNum] = useState(0);

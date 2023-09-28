@@ -9,8 +9,6 @@ const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          // '500': '#ff575cff',
-          // '600': '#ff9093ff',
           '100': '#feeeeeff',
           '200': '#ffbcbeff',
           '300': '#ff9a9dff',

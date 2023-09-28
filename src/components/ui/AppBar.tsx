@@ -1,13 +1,12 @@
-import { Box, Button, Typography } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AccountMenu from './AccountMenu';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../utils/interfaces';
-import { useAuth } from '../../contexts/AuthContext';
-// import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+// import { useAuth } from '../../contexts/AuthContext';
 
 export default function AppBar() {
-  const { currentUser, reAuthenticate } = useAuth();
+  // const { currentUser, reAuthenticate }:any = useAuth();
   const isLogged = useSelector((state: RootState) => state.general.isLogged);
 
   return (

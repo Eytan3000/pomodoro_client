@@ -72,7 +72,6 @@ export async function deleteTask(content: { id: number, token: string }) {
         const error = new Error('An error occurred while fetching the event');
         throw error;
     }
-    // const data = await response.json();
     return response;
 }
 
@@ -150,16 +149,3 @@ export async function insertNewUserIntoDb(uid: string, email: string, token: str
 
     return response;
 }
-
-// export async function login(content: { email: string, password: string }) {
-
-//     const response = await fetch(url + 'users/login', {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(content),
-//     });
-
-//     return response;
-// }
