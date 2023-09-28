@@ -14,13 +14,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { timerActions } from '../../store';
 import { RootState } from '../../utils/interfaces';
 import IntervalNumber from './IntervalNumber';
-import count from './../../assets/Audio/temp/count.wav';
-import rest from './../../assets/Audio/temp/rest.wav';
-import work from './../../assets/Audio/temp/work.wav';
+import count3 from './../../assets/Audio/count3.mp3';
+import count2 from './../../assets/Audio/count2.mp3';
+import count1 from './../../assets/Audio/count1.mp3';
+import rest from './../../assets/Audio/rest.mp3';
+import work from './../../assets/Audio/work.mp3';
 //-------------------------------------------------------------------
 const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
 //-------------------------------------------------------------------
 const Timer = () => {
+  // console.log('timer');
+
   const dispatch = useDispatch();
 
   const [intervalNum, setIntervalNum] = useState(0);
@@ -82,8 +86,14 @@ const Timer = () => {
     return { shouldRepeat: true };
   };
 
-  function playCount() {
-    new Audio(count).play();
+  function playCount3() {
+    new Audio(count3).play();
+  }
+  function playCount2() {
+    new Audio(count2).play();
+  }
+  function playCount1() {
+    new Audio(count1).play();
   }
   function playRest() {
     new Audio(rest).play();
@@ -92,9 +102,9 @@ const Timer = () => {
     new Audio(work).play();
   }
   function onUpdateHandler(remainingTime: number) {
-    if (remainingTime === 3) playCount();
-    if (remainingTime === 2) playCount();
-    if (remainingTime === 1) playCount();
+    if (remainingTime === 3) playCount3();
+    if (remainingTime === 2) playCount2();
+    if (remainingTime === 1) playCount1();
     // when timer turn to 0, the timerType is still on the previouse state.
     if (remainingTime === 0 && timerType === 'break') playWork();
     if (remainingTime === 0 && timerType === 'rest') playWork();

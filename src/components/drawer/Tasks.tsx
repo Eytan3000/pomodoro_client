@@ -17,11 +17,12 @@ interface Task {
 }
 //------------------------------------------------------------
 export default function Tasks() {
+  // console.log('tasks');
   const token = useSelector((state: RootState) => state.jwt.accessToken);
 
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
-  const { currentUser } = useAuth();
+  const { currentUser }:any = useAuth();
   const uid = currentUser.uid;
 
 
@@ -102,7 +103,7 @@ export default function Tasks() {
         {isAddTaskActive ? (
           <TextBox
             handleOkClick={handleOkClick}
-            setExit={setIsAddTaskActive.bind(false)}
+            // setExit={setIsAddTaskActive.bind(false)}
           />
         ) : (
           <Button onClick={handleAddTask} color="primary" variant="plain">

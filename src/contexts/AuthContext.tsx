@@ -47,15 +47,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return signOut(auth);
   }
   function changePassword(password: string) {
-    return updatePassword(currentUser, password);
+    if (currentUser) {
+      return updatePassword(currentUser, password);
+    } else {
+      throw new Error('Current user is not available');
+    }
   }
   async function reAuthenticate(password: string) {
-    const credential = EmailAuthProvider.credential(
-      currentUser.email,
-      password
-    );
-    const result = await reauthenticateWithCredential(currentUser, credential);
-    return result;
+    if (currentUser) {
+      const credential = EmailAuthProvider.credential(
+        currentUser.email!,
+        password
+      );
+      const result = await reauthenticateWithCredential(
+        currentUser,
+        credential
+      );
+      return result;
+    } else {
+      throw new Error('Current user is not available');
+    }
   }
 
   function resetPassword(email: string) {

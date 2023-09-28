@@ -24,7 +24,7 @@ interface Props<T> {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export default function TextBox({ handleOkClick, task, setExit }: Props) {
+export default function TextBox({ handleOkClick, task }: Props) {
   const [italic, setItalic] = useState(false);
   const [fontWeight, setFontWeight] = useState('normal');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -50,9 +50,9 @@ export default function TextBox({ handleOkClick, task, setExit }: Props) {
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
-    if (event.key === 'Escape') {
-      setExit?.(); //call the function only if it exists
-    }
+    // if (event.key === 'Escape') {
+    //   setExit?.(); //call the function only if it exists
+    // }
     if (event.key === 'Enter' && !event.shiftKey) {
       handleSubmitTask();
     }
