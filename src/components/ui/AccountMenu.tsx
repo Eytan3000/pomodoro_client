@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 export default function AccountMenu() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const { currentUser, logOut } = useAuth();
+  const { currentUser, logOut }:any = useAuth();
 const [emailCapitalLetter] = useState(currentUser.email[0].toUpperCase());
 
   function handleLogOut() {
