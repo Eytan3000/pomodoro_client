@@ -1,6 +1,7 @@
 
 
-const url = 'http://localhost:8090/'
+// const url = 'http://localhost:8090/';
+const url = import.meta.env.VITE_URL;
 
 interface Task {
     content: string;
