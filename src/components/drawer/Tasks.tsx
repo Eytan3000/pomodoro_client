@@ -45,6 +45,7 @@ export default function Tasks() {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
