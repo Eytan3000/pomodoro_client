@@ -23,7 +23,7 @@ export default function Tasks() {
   const [isAddTaskActive, setIsAddTaskActive] = useState(false);
 
   const { currentUser }:any = useAuth();
-  const uid = currentUser.uid;
+  const uid = currentUser?.uid;
 
 
 
