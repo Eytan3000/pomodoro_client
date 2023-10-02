@@ -13,6 +13,8 @@ interface Task {
 
 
 export async function getActiveTasks(signal: AbortSignal, token: string, uid: string) {
+console.log(token);
+
     const response = await fetch(url + 'tasks_active/' + uid, {
         signal,
         headers: {
@@ -21,12 +23,15 @@ export async function getActiveTasks(signal: AbortSignal, token: string, uid: st
         },
     });
 
+
+
     if (!response.ok) {
         const error = new Error('An error occurred while fetching the event');
         throw error;
     }
     const data = await response.json();
     return data;
+
 }
 
 export async function getDoneTasks(token: string, uid: string) {
