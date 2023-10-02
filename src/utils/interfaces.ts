@@ -11,10 +11,10 @@ export interface RootState {
     isEditing: boolean;
   };
   jwt:{ 
-      accessToken:string
+      accessToken:string;
   };
   general:{ 
-      isLogged:boolean
-
+      isLogged:boolean;
+      audioMute:boolean;
   };
 }

@@ -24,7 +24,7 @@ const timerColors = [timerFirst, timerMiddle, timerLast, timerLast];
 //-------------------------------------------------------------------
 const Timer = () => {
   const dispatch = useDispatch();
-
+  const audioMute = useSelector((state: RootState) => state.general.audioMute);
   const [intervalNum, setIntervalNum] = useState(0);
 
   const playing = useSelector((state: RootState) => state.timer.playing);
@@ -125,7 +125,12 @@ const Timer = () => {
           colors={timerColors}
           colorsTime={[7, 5, 2, 0]}
           onComplete={handleOnComplete}
-          onUpdate={onUpdateHandler}>
+          onUpdate={(remainingTime) => {
+            if (!audioMute) {
+              onUpdateHandler(remainingTime);
+            }
+          }}
+          >
           {({ remainingTime }) => formatTime(remainingTime)}
         </CountdownCircleTimer>
       </Typography>

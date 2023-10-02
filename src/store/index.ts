@@ -79,7 +79,7 @@ const jwtSlice = createSlice({
 })
 //-----------------------------
 
-const initialGeneralState = { isLogged:false};
+const initialGeneralState = { isLogged:false, audioMute:false};
 
 const generalSlice = createSlice({
     name: 'general',
@@ -87,6 +87,9 @@ const generalSlice = createSlice({
     reducers: {
         changeIsLoggedStatus(state, action) {
             state.isLogged= action.payload;
+        },
+        changeAudioMuteStatus(state) {
+            state.audioMute= !state.audioMute;
         }
     }
 
